@@ -3,6 +3,14 @@
 Notable changes to OpenRGB egui are recorded here. The project is currently at
 version 0.1.0; entries will be added as changes are released.
 
+## [Unreleased]
+
+## [0.1.4] - 2026-10-24
+
+Lets fix the bump_version.sh script
+
+Test
+
 ## [0.1.0] - Unreleased
 
 Initial documented feature set:
