@@ -1,0 +1,24 @@
+[package]
+name = "openrgb-egui"
+version = "0.1.0"
+edition = "2024"
+description = "A modern GUI for OpenRGB, built with egui"
+license = "GPL-2.0-or-later"
+
+[dependencies]
+eframe = { version = "0.37", features = ["persistence"] }
+egui_material_icons = "0.9"
+serde = { version = "1", features = ["derive"] }
+image = { version = "0.25", default-features = false, features = ["png"], optional = true }
+
+[features]
+# Development aid: `OPENRGB_EGUI_SHOTS=<dir>` walks through the main pages,
+# saves a PNG of each, then exits.
+screenshot = ["dep:image"]
+
+[profile.release]
+lto = "thin"
+strip = true
+
+[profile.dev.package."*"]
+opt-level = 2

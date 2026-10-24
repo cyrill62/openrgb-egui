@@ -1,0 +1,16 @@
+# Changelog
+
+Notable changes to OpenRGB egui are recorded here. The project is currently at
+version 0.1.0; entries will be added as changes are released.
+
+## [0.1.0] - Unreleased
+
+Initial documented feature set:
+
+- Device overview with live LED previews, global color, and all-off controls.
+- Hardware mode controls for supported mode properties and device saving.
+- LED layout selection and live color painting, including keyboard maps.
+- Zone fill and resizing support for addressable ARGB headers.
+- OpenRGB server profile management and hot-plug notifications.
+- Remembered server address and SDK protocol negotiation for versions 0–4.
+- Mock SDK server and read-only device probe examples.
