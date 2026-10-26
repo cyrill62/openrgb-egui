@@ -11,6 +11,7 @@
   "dependencies": {
     "@tailwindcss/vite": "4.3.3",
     "daisyui": "5.7.50",
+    "motion": "14.6.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "tailwindcss": "4.3.3",

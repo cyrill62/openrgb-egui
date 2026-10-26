@@ -1,2 +1,4 @@
 /target
 /dist
+/www/dist/
+node_modules

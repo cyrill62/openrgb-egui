@@ -13,7 +13,7 @@ body { margin: 0; }
 .led-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: .65rem; padding: 1.5rem .25rem; }
 .led-grid i { aspect-ratio: 1; border: 1px solid rgb(255 255 255 / 40%); border-radius: 50%; background: var(--led); box-shadow: 0 0 7px var(--led), 0 0 19px color-mix(in srgb, var(--led), transparent 40%); animation: pulse 3.8s ease-in-out infinite alternate; animation-delay: var(--delay); }
 .feature-card { border: 1px solid rgb(255 255 255 / 9%); background: rgb(255 255 255 / 3%); transition: transform .2s ease, border-color .2s ease; }
-.feature-card:hover { transform: translateY(-4px); border-color: rgb(192 132 252 / 40%); }
+.feature-card:hover { border-color: rgb(192 132 252 / 40%); }
 .feature-icon { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: .8rem; background: rgb(192 132 252 / 12%); color: #d8a7ff; font-size: 1.25rem; }
 .screenshot-image { aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
 @keyframes pulse { from { opacity: .72; transform: scale(.92); } to { opacity: 1; transform: scale(1.04); } }
