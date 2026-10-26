@@ -4,8 +4,8 @@ use std::path::PathBuf;
 
 use eframe::egui;
 
-use openrgb_egui::protocol::Rgb;
-use openrgb_egui::worker::Command;
+use pimpbox_rgb::protocol::Rgb;
+use pimpbox_rgb::worker::Command;
 
 use super::{App, Conn, DeviceTab, Page};
 
@@ -19,7 +19,7 @@ pub struct Tour {
 
 impl Tour {
     pub fn from_env() -> Option<Self> {
-        let dir = PathBuf::from(std::env::var_os("OPENRGB_EGUI_SHOTS")?);
+        let dir = PathBuf::from(std::env::var_os("PIMPBOX_RGB_SHOTS")?);
         std::fs::create_dir_all(&dir).ok()?;
         Some(Self {
             dir,

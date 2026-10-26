@@ -1,8 +1,8 @@
 use eframe::egui::{self, Align, Layout, Margin, RichText, Sense, Stroke, StrokeKind, Ui, vec2};
 use egui_material_icons::icons::*;
 
-use openrgb_egui::protocol::Rgb;
-use openrgb_egui::worker::Command;
+use pimpbox_rgb::protocol::Rgb;
+use pimpbox_rgb::worker::Command;
 
 use super::theme::{self, ACCENT, BORDER, TEXT, TEXT_DIM, TEXT_FAINT};
 use super::widgets;

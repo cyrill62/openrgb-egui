@@ -4,8 +4,8 @@ use eframe::egui::{
 };
 use egui_material_icons::icons::*;
 
-use openrgb_egui::protocol::{ColorMode, Controller, Direction, Rgb, Zone, ZoneType, mode_flags};
-use openrgb_egui::worker::Command;
+use pimpbox_rgb::protocol::{ColorMode, Controller, Direction, Rgb, Zone, ZoneType, mode_flags};
+use pimpbox_rgb::worker::Command;
 
 use super::theme::{self, ACCENT, TEXT, TEXT_DIM, TEXT_FAINT};
 use super::widgets::{self, Hsv};

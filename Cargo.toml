@@ -1,20 +1,32 @@
 [package]
-name = "openrgb-egui"
-version = "0.1.4"
+name = "pimpbox-rgb"
+default-run = "pimpbox-rgb"
+version = "0.1.5"
 edition = "2024"
-description = "A modern GUI for OpenRGB, built with egui"
+description = "Desktop and terminal RGB lighting control for OpenRGB"
 license = "GPL-2.0-or-later"
 
 [dependencies]
 eframe = { version = "0.37", features = ["persistence"] }
 egui_material_icons = "0.9"
 serde = { version = "1", features = ["derive"] }
+ratatui = { version = "0.30", optional = true }
 image = { version = "0.25", default-features = false, features = ["png"], optional = true }
 
 [features]
-# Development aid: `OPENRGB_EGUI_SHOTS=<dir>` walks through the main pages,
+# Development aid: `PIMPBOX_RGB_SHOTS=<dir>` walks through the main pages,
 # saves a PNG of each, then exits.
 screenshot = ["dep:image"]
+tui = ["dep:ratatui"]
+
+[[bin]]
+name = "pimpbox-rgb"
+path = "src/main.rs"
+
+[[bin]]
+name = "pimpbox-rgb-tui"
+path = "src/bin/pimpbox-rgb-tui.rs"
+required-features = ["tui"]
 
 [profile.release]
 lto = "thin"

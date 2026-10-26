@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+:root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-synthesis: none; text-rendering: optimizeLegibility; }
+html { scroll-behavior: smooth; }
+body { margin: 0; }
+.site-shell { background-image: radial-gradient(ellipse 60% 42% at 82% 12%, rgb(161 61 223 / 12%), transparent); }
+.brand-mark { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: .65rem; background: linear-gradient(135deg, #f04bad, #754cf4 60%, #32c9ce); color: #fff; font-size: .7rem; font-weight: 900; }
+.rgb-panel { position: relative; isolation: isolate; overflow: hidden; }
+.rgb-panel::before { position: absolute; z-index: -1; inset: 35% -10% -10%; background: radial-gradient(ellipse, rgb(160 53 230 / 22%), transparent 68%); content: ""; }
+.device-frame { border: 1px solid rgb(255 255 255 / 12%); border-radius: 1rem; padding: 1rem; background: linear-gradient(145deg, #15151d, #22212c); box-shadow: inset 0 1px rgb(255 255 255 / 5%), 0 18px 45px #08080d80; }
+.device-top, .device-bottom { display: flex; justify-content: space-between; color: #8b8997; font-size: .6rem; letter-spacing: .14em; }
+.led-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: .65rem; padding: 1.5rem .25rem; }
+.led-grid i { aspect-ratio: 1; border: 1px solid rgb(255 255 255 / 40%); border-radius: 50%; background: var(--led); box-shadow: 0 0 7px var(--led), 0 0 19px color-mix(in srgb, var(--led), transparent 40%); animation: pulse 3.8s ease-in-out infinite alternate; animation-delay: var(--delay); }
+.feature-card { border: 1px solid rgb(255 255 255 / 9%); background: rgb(255 255 255 / 3%); transition: transform .2s ease, border-color .2s ease; }
+.feature-card:hover { transform: translateY(-4px); border-color: rgb(192 132 252 / 40%); }
+.feature-icon { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: .8rem; background: rgb(192 132 252 / 12%); color: #d8a7ff; font-size: 1.25rem; }
+.screenshot-image { aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+@keyframes pulse { from { opacity: .72; transform: scale(.92); } to { opacity: 1; transform: scale(1.04); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }

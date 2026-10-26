@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve OpenRGB egui. Bug reports, focused fixes, and
+Thanks for helping improve PimpBox RGB. Bug reports, focused fixes, and
 well-scoped feature contributions are welcome.
 
 ## Before you start
@@ -49,11 +49,13 @@ cargo run --example probe -- 127.0.0.1 6742
   `cargo check`; run `cargo test` when changing tested behavior. Include the
   commands and outcomes in your pull request description.
 - For UI changes, include a screenshot when it helps reviewers understand the
-  result. A screenshot tour can be captured with:
+  result. Capture a screenshot tour with:
 
   ```sh
-  OPENRGB_EGUI_SHOTS=shots cargo run --features screenshot -- 127.0.0.1:6742
+  scripts/screenshots.sh
   ```
+
+  On Windows, run `.\scripts\screenshots.ps1` from PowerShell.
 
 - Do not commit generated `target/` output or local screenshots unless they are
   intentional project assets.

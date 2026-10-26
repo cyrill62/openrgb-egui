@@ -7,7 +7,7 @@ use std::time::Duration;
 use crate::client::Client;
 use crate::protocol::{Controller, Mode, Rgb, pkt};
 
-const CLIENT_NAME: &str = "OpenRGB egui";
+const CLIENT_NAME: &str = "PimpBox RGB";
 const IDLE_POLL: Duration = Duration::from_millis(100);
 
 #[derive(Debug)]
@@ -68,6 +68,10 @@ impl Handle {
 }
 
 pub fn spawn(repaint: impl Fn() + Send + 'static) -> Handle {
+    spawn_with_name(CLIENT_NAME, repaint)
+}
+
+pub fn spawn_with_name(name: &'static str, repaint: impl Fn() + Send + 'static) -> Handle {
     let (tx, cmd_rx) = channel();
     let (ev_tx, rx) = channel();
     thread::Builder::new()
@@ -77,6 +81,7 @@ pub fn spawn(repaint: impl Fn() + Send + 'static) -> Handle {
                 rx: cmd_rx,
                 tx: ev_tx,
                 repaint: Box::new(repaint),
+                client_name: name,
                 client: None,
                 devices: Vec::new(),
             }
@@ -90,6 +95,7 @@ struct Worker {
     rx: Receiver<Command>,
     tx: Sender<Event>,
     repaint: Box<dyn Fn() + Send>,
+    client_name: &'static str,
     client: Option<Client>,
     devices: Vec<Controller>,
 }
@@ -160,7 +166,7 @@ impl Worker {
         match cmd {
             Command::Connect { host, port } => {
                 self.client = None;
-                let c = match Client::connect(&host, port, CLIENT_NAME) {
+                let c = match Client::connect(&host, port, self.client_name) {
                     Ok(c) => c,
                     Err(e) => {
                         self.emit(Event::Disconnected(Some(format!(

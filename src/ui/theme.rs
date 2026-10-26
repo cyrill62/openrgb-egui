@@ -2,7 +2,7 @@ use eframe::egui::{
     self, Color32, CornerRadius, FontFamily, FontId, Margin, Shadow, Stroke, TextStyle, Visuals,
 };
 
-use openrgb_egui::protocol::Rgb;
+use pimpbox_rgb::protocol::Rgb;
 
 pub const BG: Color32 = Color32::from_rgb(0x0D, 0x0F, 0x14);
 pub const SIDEBAR: Color32 = Color32::from_rgb(0x12, 0x15, 0x1C);

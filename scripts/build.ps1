@@ -30,7 +30,8 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-Location (Join-Path $PSScriptRoot '..')
 
-$App = 'openrgb-egui'
+$App = 'pimpbox-rgb'
+$TuiApp = 'pimpbox-rgb-tui'
 $Version = (Select-String -Path Cargo.toml -Pattern '^version\s*=\s*"(.+)"' | Select-Object -First 1).Matches.Groups[1].Value
 $Dist = 'dist'
 
@@ -92,16 +93,18 @@ foreach ($t in $targets) {
     if (Have rustup) { rustup target add $t *> $null }
     Write-Host "==> building $t (cargo $builder)"
     switch ($builder) {
-        'build'    { cargo build --release --locked --target $t }
-        'zigbuild' { cargo zigbuild --release --locked --target "$t.2.31" }
-        'cross'    { cross build --release --locked --target $t }
-        'xwin'     { cargo xwin build --release --locked --target $t }
+        'build'    { cargo build --release --locked --features tui --target $t }
+        'zigbuild' { cargo zigbuild --release --locked --features tui --target "$t.2.31" }
+        'cross'    { cross build --release --locked --features tui --target $t }
+        'xwin'     { cargo xwin build --release --locked --features tui --target $t }
     }
     if ($LASTEXITCODE -ne 0) { throw "build failed for $t" }
 
-    $exe = if ($t -like '*-windows-msvc') { "$App.exe" } else { $App }
-    $bin = "target/$t/release/$exe"
+    $suffix = if ($t -like '*-windows-msvc') { '.exe' } else { '' }
+    $bin = "target/$t/release/$App$suffix"
+    $tuiBin = "target/$t/release/$TuiApp$suffix"
     if (-not (Test-Path $bin)) { throw "expected binary not found: $bin" }
+    if (-not (Test-Path $tuiBin)) { throw "expected binary not found: $tuiBin" }
     $built += $t
 
     if (-not $NoPackage) {
@@ -109,7 +112,7 @@ foreach ($t in $targets) {
         $stage = Join-Path $Dist $name
         Remove-Item -Recurse -Force $stage -ErrorAction SilentlyContinue
         New-Item -ItemType Directory -Path $stage | Out-Null
-        Copy-Item $bin, README.md $stage
+        Copy-Item $bin, $tuiBin, README.md $stage
         if ($t -like '*-windows-msvc') {
             $archive = "$stage.zip"
             Remove-Item -Force $archive -ErrorAction SilentlyContinue

@@ -11,7 +11,7 @@ use std::net::{TcpListener, TcpStream};
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-use openrgb_egui::protocol::*;
+use pimpbox_rgb::protocol::*;
 
 const SERVER_PROTOCOL: u32 = 4;
 

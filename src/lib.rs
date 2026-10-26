@@ -1,4 +1,4 @@
-//! OpenRGB SDK client library, shared by the GUI binary and the mock server example.
+//! OpenRGB SDK client library, shared by both app frontends and the examples.
 
 pub mod client;
 pub mod protocol;

@@ -1,9 +1,17 @@
 # Changelog
 
-Notable changes to OpenRGB egui are recorded here. The project is currently at
+Notable changes to PimpBox RGB are recorded here. The project is currently at
 version 0.1.0; entries will be added as changes are released.
 
 ## [Unreleased]
+
+## [0.1.5] - 2026-10-26
+
+* TUI version
+* Website
+
+- Include the ratatui terminal interface behind the `tui` feature.
+- Rename the app to PimpBox RGB and add its Pimp My Box: RGB Edition website.
 
 ## [0.1.4] - 2026-10-24
 

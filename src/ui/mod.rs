@@ -1,6 +1,6 @@
 mod device;
 mod pages;
-#[cfg(feature = "screenshot")]
+#[cfg(all(feature = "screenshot", debug_assertions))]
 mod shots;
 pub mod theme;
 mod widgets;
@@ -14,8 +14,8 @@ use eframe::egui::{
 use egui_material_icons::{MaterialIcon, icons::*};
 use serde::{Deserialize, Serialize};
 
-use openrgb_egui::protocol::{Controller, Mode, Rgb};
-use openrgb_egui::worker::{self, Command, Event};
+use pimpbox_rgb::protocol::{Controller, Mode, Rgb};
+use pimpbox_rgb::worker::{self, Command, Event};
 
 use theme::{ACCENT, BORDER, SIDEBAR, TEXT, TEXT_DIM, TEXT_FAINT};
 use widgets::Hsv;
@@ -86,7 +86,7 @@ pub struct App {
     pub new_profile: String,
     pub sync_color: Hsv,
     toasts: Vec<Toast>,
-    #[cfg(feature = "screenshot")]
+    #[cfg(all(feature = "screenshot", debug_assertions))]
     tour: Option<shots::Tour>,
 }
 
@@ -120,7 +120,7 @@ impl App {
             new_profile: String::new(),
             sync_color: settings.paint,
             toasts: Vec::new(),
-            #[cfg(feature = "screenshot")]
+            #[cfg(all(feature = "screenshot", debug_assertions))]
             tour: shots::Tour::from_env(),
             settings,
         };
@@ -439,7 +439,7 @@ impl App {
 impl eframe::App for App {
     fn logic(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         self.pump(ctx);
-        #[cfg(feature = "screenshot")]
+        #[cfg(all(feature = "screenshot", debug_assertions))]
         shots::tick(self, ctx);
     }
 

@@ -6,7 +6,7 @@ use eframe::egui::{
 };
 use egui_material_icons::{MaterialIcon, icons::*};
 
-use openrgb_egui::protocol::{DeviceType, Rgb};
+use pimpbox_rgb::protocol::{DeviceType, Rgb};
 
 use super::theme::{self, ACCENT, BORDER, CARD_HI, INSET, TEXT, TEXT_DIM};
 
