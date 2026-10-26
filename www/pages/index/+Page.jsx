@@ -2,7 +2,7 @@ import './style.css'
 import logo from '../../assets/logo.svg'
 import { MotionConfig, motion } from 'motion/react'
 
-const github = 'https://github.com/cyrill62/openrgb-egui'
+const github = 'https://github.com/cyrill62/pimpbox-rgb'
 const colors = ['#ff4b91', '#bc65ff', '#6486ff', '#41d9d0', '#a0f078', '#ffd166']
 const screenshots = [
   ['00-overview.png', 'Device overview'],

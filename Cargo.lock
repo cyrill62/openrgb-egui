@@ -3078,7 +3078,7 @@ dependencies = [
 
 [[package]]
 name = "pimpbox-rgb"
-version = "0.1.6"
+version = "0.2.0"
 dependencies = [
  "eframe",
  "egui_material_icons",

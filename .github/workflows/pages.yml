@@ -33,7 +33,7 @@ jobs:
       - run: npm run build
         working-directory: www
         env:
-          BASE_PATH: /openrgb-egui/
+          BASE_PATH: /pimpbox-rgb/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: www/dist/client
