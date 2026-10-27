@@ -5,12 +5,20 @@
 html { scroll-behavior: smooth; }
 body { margin: 0; }
 .site-shell { background-image: radial-gradient(ellipse 60% 42% at 82% 12%, rgb(161 61 223 / 12%), transparent); }
-.brand-mark { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: .65rem; background: linear-gradient(135deg, #f04bad, #754cf4 60%, #32c9ce); color: #fff; font-size: .7rem; font-weight: 900; }
 .screenshot-tab { position: relative; border: 1px solid rgb(255 255 255 / 12%); border-radius: .6rem; padding: .45rem .75rem; color: rgb(230 232 240 / 65%); font-size: .8rem; transition: color .18s ease, border-color .18s ease, background .18s ease; }
 .screenshot-tab:hover { border-color: rgb(192 132 252 / 45%); color: #fff; }
 .screenshot-tab.active { border-color: rgb(192 132 252 / 50%); background: rgb(192 132 252 / 14%); color: #fff; }
 .window-dot { width: .55rem; height: .55rem; border-radius: 9999px; background: rgb(255 255 255 / 24%); }
 .screenshot-window { box-shadow: 0 24px 70px rgb(0 0 0 / 35%); }
+.screenshot-stage { background: #0b0c12; }
+.screenshot-modal { width: min(96vw, 1280px); max-width: none; max-height: 94vh; padding: 0; overflow: hidden; border: 1px solid rgb(255 255 255 / 16%); border-radius: 1rem; color: #e6e8f0; background: #11121a; }
+.screenshot-modal::backdrop { background: rgb(4 5 10 / 82%); backdrop-filter: blur(6px); }
+.screenshot-modal-content { display: flex; max-height: 94vh; flex-direction: column; }
+.screenshot-modal-stage { position: relative; min-height: 0; height: min(68vh, 820px); background: #08090e; }
+.screenshot-arrow { position: absolute; z-index: 1; top: 50%; display: grid; width: 2.75rem; height: 2.75rem; transform: translateY(-50%); place-items: center; border: 1px solid rgb(255 255 255 / 20%); border-radius: 9999px; color: #fff; background: rgb(10 11 17 / 72%); font-size: 2rem; line-height: 1; }
+.screenshot-arrow:hover { background: rgb(100 70 170 / 85%); }
+.screenshot-arrow.left { left: .75rem; }
+.screenshot-arrow.right { right: .75rem; }
 .feature-card { border: 1px solid rgb(255 255 255 / 9%); background: rgb(255 255 255 / 3%); transition: transform .2s ease, border-color .2s ease; }
 .feature-card:hover { border-color: rgb(192 132 252 / 40%); }
 .feature-icon { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: .8rem; background: rgb(192 132 252 / 12%); color: #d8a7ff; font-size: 1.25rem; }

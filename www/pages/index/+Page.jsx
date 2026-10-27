@@ -1,6 +1,7 @@
 import './style.css'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import banner from '../../assets/banner.svg'
+import logo from '../../assets/logo.svg'
 import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 
 const github = 'https://github.com/cyrill62/pimpbox-rgb'
@@ -13,14 +14,26 @@ const screenshots = [
 
 export default function Page() {
   const [activeScreenshot, setActiveScreenshot] = useState(0)
+  const [modalOpen, setModalOpen] = useState(false)
+  const dialogRef = useRef(null)
   const screenshot = screenshots[activeScreenshot]
+  const changeScreenshot = (step) => {
+    setActiveScreenshot((index) => (index + step + screenshots.length) % screenshots.length)
+  }
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+    if (modalOpen && !dialog.open) dialog.showModal()
+    if (!modalOpen && dialog.open) dialog.close()
+  }, [modalOpen])
 
   return (
     <MotionConfig reducedMotion="user">
     <main data-theme="night" className="site-shell min-h-screen bg-base-100 text-base-content">
       <header className="navbar mx-auto max-w-6xl px-5 sm:px-8">
         <a className="flex items-center gap-3 font-bold tracking-wide" href="#top">
-          <span className="brand-mark" aria-hidden="true">PB</span>
+          <img className="h-8 w-8 object-contain" src={logo} alt="" aria-hidden="true" />
           <span>PimpBox RGB</span>
         </a>
         <nav className="ml-auto flex items-center gap-2 sm:gap-4" aria-label="Main navigation">
@@ -30,22 +43,22 @@ export default function Page() {
       </header>
 
       <section id="top" className="hero min-h-[72vh] px-5 py-20">
-        <div className="hero-content grid max-w-6xl gap-16 lg:grid-cols-[1.15fr_.85fr]">
-          <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease: 'easeOut' }}>
+        <div className="hero-content flex w-full max-w-6xl flex-col gap-12">
+          <motion.div className="w-full text-center" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease: 'easeOut' }}>
             <div className="badge badge-outline mb-6 border-primary/50 px-4 py-3 text-primary">OpenRGB, with attitude</div>
-            <h1 className="max-w-[680px]"><img className="block w-full" src={banner} alt="PimpBox RGB — Pimp My Box: RGB Edition" /></h1>
-            <p className="mt-7 max-w-xl text-lg leading-8 text-base-content/70">
+            <h1 className="mx-auto max-w-[680px]"><img className="block w-full" src={banner} alt="PimpBox RGB — Pimp My Box: RGB Edition" /></h1>
+            <p className="mx-auto mt-7 max-w-xl text-lg leading-8 text-base-content/70">
               Take control of your lighting. Browse devices, pick a mode, paint individual LEDs, resize zones, and manage profiles.
             </p>
-            <div className="mt-9 flex flex-wrap gap-3">
+            <div className="mt-9 flex flex-wrap justify-center gap-3">
               <motion.a className="btn btn-primary btn-lg" href={`${github}/releases/latest`} whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>Get the latest release <span aria-hidden="true">↗</span></motion.a>
               <motion.a className="btn btn-outline btn-lg" href={github} whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }}>View source</motion.a>
             </div>
             <p className="mt-5 text-sm text-base-content/50">Requires a running OpenRGB SDK server.</p>
           </motion.div>
 
-          <motion.div className="min-w-0" aria-label="PimpBox RGB app screenshots" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}>
-            <div className="mb-3 flex flex-wrap justify-center gap-2 lg:justify-start" role="tablist" aria-label="App screenshots">
+          <motion.div className="mx-auto w-full max-w-5xl" aria-label="PimpBox RGB app screenshots" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}>
+            <div className="mb-4 flex flex-wrap justify-center gap-2" role="tablist" aria-label="App screenshots">
               {screenshots.map(({ tab }, index) => (
                 <button
                   key={tab}
@@ -64,26 +77,77 @@ export default function Page() {
                 <span className="window-dot" /><span className="window-dot" /><span className="window-dot" />
                 <span className="ml-2 truncate text-xs text-base-content/60">{screenshot.title}</span>
               </div>
-              <div className="aspect-[16/10] overflow-hidden bg-base-300">
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={screenshot.src}
-                    src={screenshot.src}
-                    alt={`PimpBox RGB ${screenshot.title}`}
-                    width="1918"
-                    height="1218"
-                    className="block h-full w-full object-cover object-top"
-                    initial={{ opacity: 0, scale: 0.985 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.985 }}
-                    transition={{ duration: 0.22 }}
-                  />
-                </AnimatePresence>
+              <div className="screenshot-stage aspect-[16/10] overflow-hidden bg-base-300">
+                <button className="block h-full w-full cursor-zoom-in" type="button" onClick={() => setModalOpen(true)} aria-label={`Open ${screenshot.title} screenshot carousel`}>
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={screenshot.src}
+                      src={screenshot.src}
+                      alt={`PimpBox RGB ${screenshot.title}`}
+                      width="1918"
+                      height="1218"
+                      className="block h-full w-full object-contain"
+                      initial={{ opacity: 0, scale: 0.985 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.985 }}
+                      transition={{ duration: 0.22 }}
+                    />
+                  </AnimatePresence>
+                </button>
               </div>
             </div>
           </motion.div>
         </div>
       </section>
+
+      <dialog
+        ref={dialogRef}
+        className="screenshot-modal"
+        aria-label="PimpBox RGB screenshot carousel"
+        onClose={() => setModalOpen(false)}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) setModalOpen(false)
+        }}
+        onKeyDown={(event) => {
+          if (event.key === 'ArrowLeft') changeScreenshot(-1)
+          if (event.key === 'ArrowRight') changeScreenshot(1)
+        }}
+      >
+        <div className="screenshot-modal-content">
+          <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4">
+            <div>
+              <h2 className="font-semibold">{screenshot.title}</h2>
+              <p className="mt-1 text-sm text-base-content/55">{activeScreenshot + 1} / {screenshots.length}</p>
+            </div>
+            <button className="btn btn-circle btn-ghost btn-sm" type="button" aria-label="Close screenshot carousel" onClick={() => setModalOpen(false)}>✕</button>
+          </div>
+          <div className="screenshot-modal-stage">
+            <button className="screenshot-arrow left" type="button" aria-label="Previous screenshot" onClick={() => changeScreenshot(-1)}>‹</button>
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={screenshot.src}
+                src={screenshot.src}
+                alt={`PimpBox RGB ${screenshot.title}`}
+                width="1918"
+                height="1218"
+                className="h-full w-full object-contain"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.18 }}
+              />
+            </AnimatePresence>
+            <button className="screenshot-arrow right" type="button" aria-label="Next screenshot" onClick={() => changeScreenshot(1)}>›</button>
+          </div>
+          <div className="flex items-center justify-between gap-4 border-t border-white/10 px-5 py-4">
+            <span className="text-sm text-base-content/60">{screenshot.tab}</span>
+            <div className="flex gap-2">
+              <button className="btn btn-outline btn-sm" type="button" onClick={() => changeScreenshot(-1)}>Previous</button>
+              <button className="btn btn-primary btn-sm" type="button" onClick={() => changeScreenshot(1)}>Next</button>
+            </div>
+          </div>
+        </div>
+      </dialog>
 
       <section id="features" className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
         <div className="mb-8 max-w-2xl">

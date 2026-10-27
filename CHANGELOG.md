@@ -5,6 +5,10 @@ version 0.1.0; entries will be added as changes are released.
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-10-27
+
+Pimp the website
+
 ## [0.3.1] - 2026-10-27
 
 Fix banner on connection screen
