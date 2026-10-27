@@ -5,6 +5,11 @@ version 0.1.0; entries will be added as changes are released.
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-10-27
+
+Add TODO in README.md
+Center the caroussel's modal
+
 ## [0.3.2] - 2026-10-27
 
 Pimp the website

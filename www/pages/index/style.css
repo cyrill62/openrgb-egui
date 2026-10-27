@@ -11,7 +11,7 @@ body { margin: 0; }
 .window-dot { width: .55rem; height: .55rem; border-radius: 9999px; background: rgb(255 255 255 / 24%); }
 .screenshot-window { box-shadow: 0 24px 70px rgb(0 0 0 / 35%); }
 .screenshot-stage { background: #0b0c12; }
-.screenshot-modal { width: min(96vw, 1280px); max-width: none; max-height: 94vh; padding: 0; overflow: hidden; border: 1px solid rgb(255 255 255 / 16%); border-radius: 1rem; color: #e6e8f0; background: #11121a; }
+.screenshot-modal { position: fixed; inset: 0; width: min(96vw, 1280px); max-width: none; max-height: 94vh; margin: auto; padding: 0; overflow: hidden; border: 1px solid rgb(255 255 255 / 16%); border-radius: 1rem; color: #e6e8f0; background: #11121a; }
 .screenshot-modal::backdrop { background: rgb(4 5 10 / 82%); backdrop-filter: blur(6px); }
 .screenshot-modal-content { display: flex; max-height: 94vh; flex-direction: column; }
 .screenshot-modal-stage { position: relative; min-height: 0; height: min(68vh, 820px); background: #08090e; }

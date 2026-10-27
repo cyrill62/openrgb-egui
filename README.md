@@ -12,6 +12,11 @@ This app is a client for a running OpenRGB instance. It connects through the
 OpenRGB SDK server and controls devices detected by OpenRGB; it does not replace
 the OpenRGB service or detect hardware itself.
 
+## TODO
+
+- [ ] Move the website to a separate repository to avoid bumping the app version
+  when updating the website.
+
 ## Features
 
 - **Overview:** inspect devices with live LED previews, apply one color to all,
