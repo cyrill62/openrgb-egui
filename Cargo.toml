@@ -1,15 +1,16 @@
 [package]
 name = "pimpbox-rgb"
 default-run = "pimpbox-rgb"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2024"
 description = "Desktop and terminal RGB lighting control for OpenRGB"
 license = "GPL-2.0-or-later"
 
 [dependencies]
 eframe = { version = "0.37", features = ["persistence"] }
-egui_extras = { version = "0.37", features = ["svg"] }
+egui_extras = { version = "0.37", features = ["svg", "svg_text"] }
 egui_material_icons = "0.9"
+resvg = { version = "0.45", default-features = false, features = ["text", "system-fonts"] }
 serde = { version = "1", features = ["derive"] }
 ratatui = { version = "0.30", optional = true }
 image = { version = "0.25", default-features = false, features = ["png"], optional = true }

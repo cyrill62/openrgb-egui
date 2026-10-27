@@ -1,17 +1,20 @@
 import './style.css'
+import { useState } from 'react'
 import banner from '../../assets/banner.svg'
-import { MotionConfig, motion } from 'motion/react'
+import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 
 const github = 'https://github.com/cyrill62/pimpbox-rgb'
-const colors = ['#ff4b91', '#bc65ff', '#6486ff', '#41d9d0', '#a0f078', '#ffd166']
 const screenshots = [
-  ['00-overview.png', 'Device overview'],
-  ['02-keyboard-leds.png', 'Paint individual keyboard LEDs'],
-  ['05-motherboard-zones.png', 'Fill and resize device zones'],
-  ['08-profiles.png', 'Save and load lighting profiles'],
-].map(([file, title]) => ({ src: `${import.meta.env.BASE_URL}${file}`, title }))
+  ['00-overview.png', 'Overview', 'All connected devices'],
+  ['02-keyboard-leds.png', 'Keyboard', 'Paint individual LEDs'],
+  ['05-motherboard-zones.png', 'Zones', 'Resize and fill device zones'],
+  ['08-profiles.png', 'Profiles', 'Save and load lighting profiles'],
+].map(([file, tab, title]) => ({ src: `${import.meta.env.BASE_URL}${file}`, tab, title }))
 
 export default function Page() {
+  const [activeScreenshot, setActiveScreenshot] = useState(0)
+  const screenshot = screenshots[activeScreenshot]
+
   return (
     <MotionConfig reducedMotion="user">
     <main data-theme="night" className="site-shell min-h-screen bg-base-100 text-base-content">
@@ -41,21 +44,41 @@ export default function Page() {
             <p className="mt-5 text-sm text-base-content/50">Requires a running OpenRGB SDK server.</p>
           </motion.div>
 
-          <motion.div className="rgb-panel card border border-white/10 bg-base-200/70 shadow-2xl" aria-label="Decorative RGB lighting preview" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}>
-            <div className="card-body gap-5 p-6 sm:p-8">
-              <div className="flex items-center justify-between">
-                <div><div className="text-xs uppercase tracking-[.2em] text-base-content/45">Lighting preview</div><div className="mt-1 font-semibold">Your setup, your colors</div></div>
-                <span className="status status-success" aria-label="Connected" />
+          <motion.div className="min-w-0" aria-label="PimpBox RGB app screenshots" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.15, ease: 'easeOut' }}>
+            <div className="mb-3 flex flex-wrap justify-center gap-2 lg:justify-start" role="tablist" aria-label="App screenshots">
+              {screenshots.map(({ tab }, index) => (
+                <button
+                  key={tab}
+                  type="button"
+                  role="tab"
+                  aria-selected={index === activeScreenshot}
+                  className={`screenshot-tab ${index === activeScreenshot ? 'active' : ''}`}
+                  onClick={() => setActiveScreenshot(index)}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div className="screenshot-window overflow-hidden rounded-xl border border-white/10 bg-base-200 shadow-2xl">
+              <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
+                <span className="window-dot" /><span className="window-dot" /><span className="window-dot" />
+                <span className="ml-2 truncate text-xs text-base-content/60">{screenshot.title}</span>
               </div>
-              <div className="device-frame">
-                <div className="device-top"><span>MAINBOARD</span><span>ARGB ZONE 1</span></div>
-                <div className="led-grid" aria-hidden="true">
-                  {colors.concat(colors, colors).map((color, i) => <i key={i} style={{ '--led': color, '--delay': `${i * 80}ms` }} />)}
-                </div>
-                <div className="device-bottom"><span>OpenRGB SDK</span><span>12 LEDs</span></div>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {['Modes', 'LED maps', 'Zones', 'Profiles'].map((label) => <span className="badge badge-neutral" key={label}>{label}</span>)}
+              <div className="aspect-[16/10] overflow-hidden bg-base-300">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={screenshot.src}
+                    src={screenshot.src}
+                    alt={`PimpBox RGB ${screenshot.title}`}
+                    width="1918"
+                    height="1218"
+                    className="block h-full w-full object-cover object-top"
+                    initial={{ opacity: 0, scale: 0.985 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.985 }}
+                    transition={{ duration: 0.22 }}
+                  />
+                </AnimatePresence>
               </div>
             </div>
           </motion.div>
@@ -71,23 +94,6 @@ export default function Page() {
           <motion.article className="card feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} whileHover={{ y: -4 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45 }}><div className="card-body"><div className="feature-icon">▦</div><h3 className="card-title">Desktop app</h3><p className="text-base-content/65">Live device previews, visual LED maps, color painting, hardware modes, zones, and profiles.</p></div></motion.article>
           <motion.article className="card feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} whileHover={{ y: -4 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45, delay: 0.1 }}><div className="card-body"><div className="feature-icon">⌘</div><h3 className="card-title">Terminal UI</h3><p className="text-base-content/65">A keyboard-friendly controller for headless machines and SSH sessions, with mouse support too.</p></div></motion.article>
           <motion.article className="card feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} whileHover={{ y: -4 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45, delay: 0.2 }}><div className="card-body"><div className="feature-icon">✳</div><h3 className="card-title">OpenRGB powered</h3><p className="text-base-content/65">Connects to the OpenRGB SDK server and controls hardware OpenRGB has already detected.</p></div></motion.article>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
-        <div className="mb-8 max-w-2xl">
-          <p className="font-semibold uppercase tracking-[.2em] text-primary">Take a look</p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">See PimpBox RGB in action.</h2>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2">
-          {screenshots.map(({ src, title }, index) => (
-            <motion.figure className="card overflow-hidden border border-white/10 bg-base-200/70" key={src} initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.12 }} transition={{ duration: 0.5, delay: index * 0.08 }}>
-              <a href={src} target="_blank" rel="noreferrer" aria-label={`Open screenshot: ${title}`}>
-                <motion.img className="screenshot-image w-full" src={src} alt={title} loading="lazy" whileHover={{ scale: 1.02 }} transition={{ duration: 0.25 }} />
-              </a>
-              <figcaption className="px-5 py-4 font-medium">{title}</figcaption>
-            </motion.figure>
-          ))}
         </div>
       </section>
 

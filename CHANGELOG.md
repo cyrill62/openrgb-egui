@@ -5,6 +5,11 @@ version 0.1.0; entries will be added as changes are released.
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-27
+
+Fix banner on connection screen
+Remove widget in the website (it doesnt fit the app's design)
+
 ## [0.3.0] - 2026-10-27
 
 Use the logo, not the banner

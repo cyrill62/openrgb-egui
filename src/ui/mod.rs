@@ -96,14 +96,16 @@ impl App {
     /// `server` overrides the saved address (`host` or `host:port`) and connects.
     pub fn new(cc: &eframe::CreationContext<'_>, server: Option<String>) -> Self {
         theme::install(&cc.egui_ctx);
+        let mut svg_options = resvg::usvg::Options::default();
+        svg_options.fontdb_mut().load_system_fonts();
         let banner = egui_extras::image::load_svg_bytes(
             include_bytes!("../../assets/banner.svg"),
-            &Default::default(),
+            &svg_options,
         )
         .expect("valid app banner SVG");
         let logo = egui_extras::image::load_svg_bytes(
             include_bytes!("../../assets/logo.svg"),
-            &Default::default(),
+            &svg_options,
         )
         .expect("valid app logo SVG");
         let banner = cc

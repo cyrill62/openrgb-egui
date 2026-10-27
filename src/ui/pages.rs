@@ -56,7 +56,11 @@ pub fn connect_screen(app: &mut App, ui: &mut Ui) {
                 .show(ui, |ui| {
                     ui.set_width(376.0);
                     ui.vertical_centered(|ui| {
-                        ui.add(egui::Image::new(&app.banner).fit_to_exact_size(vec2(352.0, 98.0)));
+                        ui.add(
+                            egui::Image::new(&app.banner)
+                                .fit_to_exact_size(vec2(352.0, 98.0))
+                                .alt_text("PimpBox RGB — Pimp My Box: RGB Edition"),
+                        );
                         ui.label(RichText::new("OpenRGB Lighting control").color(TEXT_DIM));
                     });
                     ui.add_space(22.0);
