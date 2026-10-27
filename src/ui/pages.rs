@@ -43,7 +43,6 @@ fn server_fields(app: &mut App, ui: &mut Ui) -> bool {
 // ---------------------------------------------------------------------------
 
 pub fn connect_screen(app: &mut App, ui: &mut Ui) {
-    let t = ui.input(|i| i.time) as f32;
     let connecting = app.conn == Conn::Connecting;
     if connecting {
         ui.ctx().request_repaint();
@@ -57,17 +56,8 @@ pub fn connect_screen(app: &mut App, ui: &mut Ui) {
                 .show(ui, |ui| {
                     ui.set_width(376.0);
                     ui.vertical_centered(|ui| {
-                        super::logo_ring(ui, 64.0, if connecting { t * 3.0 } else { 0.0 });
-                        ui.add_space(10.0);
-                        ui.label(
-                            RichText::new("OpenRGB")
-                                .text_style(theme::title())
-                                .color(TEXT),
-                        );
-                        ui.label(
-                            RichText::new("Connect to a running OpenRGB SDK server")
-                                .color(TEXT_DIM),
-                        );
+                        ui.add(egui::Image::new(&app.banner).fit_to_exact_size(vec2(352.0, 98.0)));
+                        ui.label(RichText::new("OpenRGB Lighting control").color(TEXT_DIM));
                     });
                     ui.add_space(22.0);
                     let submit = server_fields(app, ui);
@@ -321,15 +311,8 @@ pub fn profiles(app: &mut App, ui: &mut Ui) {
                 .inner
                 .clicked();
             if ok && (clicked || enter) {
-                let overwrite = app.profiles.contains(&name);
-                app.send(Command::SaveProfile(name.clone()));
+                app.send(Command::SaveProfile(name));
                 app.new_profile.clear();
-                let verb = if overwrite { "Updated" } else { "Saved" };
-                app.toast(
-                    ui.ctx(),
-                    format!("{verb} profile \u{201C}{name}\u{201D}"),
-                    false,
-                );
             }
         });
     });

@@ -1068,12 +1068,6 @@ impl App {
             },
             InputTarget::NewProfile => {
                 if !text.is_empty() {
-                    let verb = if self.profiles.contains(&text) {
-                        "Updated"
-                    } else {
-                        "Saved"
-                    };
-                    self.toast(format!("{verb} profile \u{201C}{text}\u{201D}"), false);
                     self.send(Command::SaveProfile(text));
                 }
             }
@@ -1326,7 +1320,7 @@ impl App {
 
     fn draw_sidebar(&mut self, buf: &mut ratatui::buffer::Buffer, area: Rect) {
         let focused = self.focus == Focus::Sidebar && self.popup.is_none();
-        let mut title = theme::rainbow(" OpenRGB", 0.0);
+        let mut title = theme::rainbow(" PimpBox RGB", 0.0);
         title.push_span(Span::styled(" TUI ", theme::dim()));
         let block = theme::panel(title, focused);
         let inner = block.inner(area);

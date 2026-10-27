@@ -8,14 +8,23 @@ use std::fmt;
 pub const MAGIC: &[u8; 4] = b"ORGB";
 pub const HEADER_LEN: usize = 16;
 
-/// Highest protocol version this client understands.
+/// Highest protocol version used by the main control connection.
 pub const CLIENT_PROTOCOL_VERSION: u32 = 4;
+/// Protocol version used on the separate connection for newer profile permissions.
+pub const PROFILE_PROTOCOL_VERSION: u32 = 6;
+/// Highest controller data format currently parsed by this client.
+pub const CONTROLLER_PROTOCOL_VERSION: u32 = 4;
 
 pub mod pkt {
+    pub const ACK: u32 = 10;
     pub const REQUEST_CONTROLLER_COUNT: u32 = 0;
     pub const REQUEST_CONTROLLER_DATA: u32 = 1;
     pub const REQUEST_PROTOCOL_VERSION: u32 = 40;
     pub const SET_CLIENT_NAME: u32 = 50;
+    pub const SET_CLIENT_FLAGS: u32 = 52;
+    pub const SET_SERVER_FLAGS: u32 = 53;
+    pub const CLIENT_FLAG_REQUEST_LOCAL_CLIENT: u32 = 1 << 16;
+    pub const SERVER_FLAG_LOCAL_CLIENT: u32 = 1 << 16;
     pub const DEVICE_LIST_UPDATED: u32 = 100;
     pub const REQUEST_PROFILE_LIST: u32 = 150;
     pub const REQUEST_SAVE_PROFILE: u32 = 151;
@@ -890,7 +899,7 @@ mod tests {
 
     #[test]
     fn controller_roundtrip_all_protocols() {
-        for proto in 0..=CLIENT_PROTOCOL_VERSION {
+        for proto in 0..=CONTROLLER_PROTOCOL_VERSION {
             let mut c = sample();
             let bytes = encode_controller(&c, proto);
             let parsed = parse_controller(&bytes, proto).unwrap();

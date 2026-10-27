@@ -1,6 +1,6 @@
 # PimpBox RGB
 
-<p align="center"><img src="www/assets/logo.svg" alt="PimpBox RGB — Pimp My Box: RGB Edition" width="720"></p>
+<p align="center"><img src="assets/banner.svg" alt="PimpBox RGB — Pimp My Box: RGB Edition" width="900"></p>
 
 [Website](https://cyrill62.github.io/pimpbox-rgb/) · [GitHub](https://github.com/cyrill62/pimpbox-rgb)
 
@@ -36,8 +36,9 @@ the OpenRGB service or detect hardware itself.
    cargo run --release --features tui --bin pimpbox-rgb-tui # terminal interface
    ```
 
-The client supports SDK protocol versions 0–4. Newer servers negotiate down to
-version 4.
+The main control connection uses SDK protocol versions 0–4. With newer servers,
+the app opens a separate protocol 6 connection for profile operations that
+require local-client access.
 
 ## Building releases
 

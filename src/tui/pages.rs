@@ -76,10 +76,10 @@ pub fn connect_screen(app: &App, buf: &mut Buffer, area: Rect) -> (Col, u16) {
 
     let phase = if connecting { app.time() * 240.0 } else { 0.0 };
     let line = |y: u16| Rect::new(inner.x, inner.y + y, inner.width, 1);
-    theme::rainbow("OpenRGB", phase)
+    theme::rainbow("PimpBox RGB", phase)
         .centered()
         .render(line(0), buf);
-    Line::styled("Connect to a running OpenRGB SDK server", theme::dim())
+    Line::styled("OpenRGB Lighting control", theme::dim())
         .centered()
         .render(line(1), buf);
 

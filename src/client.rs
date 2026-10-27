@@ -10,13 +10,29 @@ pub struct Client {
     stream: TcpStream,
     /// Negotiated protocol version: `min(client, server)`.
     pub proto: u32,
+    /// Connection protocol version, which may exceed the parsed data format.
+    client_proto: u32,
     pub server_proto: u32,
+    is_local_client: bool,
     /// Set when the server announced a device list change.
     pub devices_changed: bool,
 }
 
 impl Client {
     pub fn connect(host: &str, port: u16, name: &str) -> Result<Self> {
+        Self::connect_with_protocol(host, port, name, protocol::CLIENT_PROTOCOL_VERSION)
+    }
+
+    pub fn connect_for_profiles(host: &str, port: u16, name: &str) -> Result<Self> {
+        Self::connect_with_protocol(host, port, name, protocol::PROFILE_PROTOCOL_VERSION)
+    }
+
+    fn connect_with_protocol(
+        host: &str,
+        port: u16,
+        name: &str,
+        client_version: u32,
+    ) -> Result<Self> {
         let addr = (host, port)
             .to_socket_addrs()?
             .next()
@@ -27,14 +43,16 @@ impl Client {
         let mut c = Self {
             stream,
             proto: 0,
+            client_proto: 0,
             server_proto: 0,
+            is_local_client: false,
             devices_changed: false,
         };
 
         c.send(
             0,
             pkt::REQUEST_PROTOCOL_VERSION,
-            &protocol::CLIENT_PROTOCOL_VERSION.to_le_bytes(),
+            &client_version.to_le_bytes(),
         )?;
         // Servers predating protocol versioning never answer this request.
         c.server_proto = match c.recv(pkt::REQUEST_PROTOCOL_VERSION) {
@@ -47,8 +65,19 @@ impl Client {
             }
             Err(e) => return Err(e),
         };
-        c.proto = c.server_proto.min(protocol::CLIENT_PROTOCOL_VERSION);
+        c.client_proto = c.server_proto.min(client_version);
+        c.proto = c.client_proto.min(protocol::CONTROLLER_PROTOCOL_VERSION);
         c.send(0, pkt::SET_CLIENT_NAME, &protocol::nul_terminated(name))?;
+        if c.client_proto >= 6 {
+            let flags = pkt::CLIENT_FLAG_REQUEST_LOCAL_CLIENT;
+            c.send(0, pkt::SET_CLIENT_FLAGS, &flags.to_le_bytes())?;
+            let response = c.recv(pkt::SET_SERVER_FLAGS)?;
+            if response.len() != 4 {
+                return Err(Error::Truncated);
+            }
+            let flags = protocol::Reader::new(&response).u32()?;
+            c.is_local_client = flags & pkt::SERVER_FLAG_LOCAL_CLIENT != 0;
+        }
         Ok(c)
     }
 
@@ -170,6 +199,38 @@ impl Client {
     }
 
     pub fn profile_op(&mut self, id: u32, name: &str) -> Result<()> {
-        self.send(0, id, &protocol::nul_terminated(name))
+        if self.client_proto >= 6
+            && matches!(id, pkt::REQUEST_SAVE_PROFILE | pkt::REQUEST_DELETE_PROFILE)
+            && !self.is_local_client
+        {
+            return Err(Error::Unexpected(
+                "OpenRGB denied local-client access. Connect to the SDK server on this computer to save or delete profiles.".into(),
+            ));
+        }
+        self.send(0, id, &protocol::nul_terminated(name))?;
+        if self.client_proto >= 6 {
+            loop {
+                let (h, body) = self.read_packet()?;
+                if h.id == pkt::DEVICE_LIST_UPDATED {
+                    self.devices_changed = true;
+                }
+                if h.id == pkt::ACK {
+                    if body.len() != 8 {
+                        return Err(Error::Truncated);
+                    }
+                    let mut r = protocol::Reader::new(&body);
+                    if r.u32()? == id {
+                        let status = r.u32()?;
+                        if status != 0 {
+                            return Err(Error::Unexpected(format!(
+                                "OpenRGB rejected profile request (status {status})"
+                            )));
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        Ok(())
     }
 }

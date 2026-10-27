@@ -8,7 +8,7 @@ mod widgets;
 use std::collections::BTreeSet;
 
 use eframe::egui::{
-    self, Align, Align2, Color32, CornerRadius, Layout, Margin, Mesh, RichText, Sense, Stroke,
+    self, Align, Align2, Color32, CornerRadius, Layout, Margin, RichText, Sense, Stroke,
     StrokeKind, Ui, pos2, vec2,
 };
 use egui_material_icons::{MaterialIcon, icons::*};
@@ -75,6 +75,8 @@ struct Toast {
 
 pub struct App {
     worker: worker::Handle,
+    banner: egui::TextureHandle,
+    logo: egui::TextureHandle,
     pub settings: Settings,
     pub conn: Conn,
     pub devices: Vec<Controller>,
@@ -94,6 +96,22 @@ impl App {
     /// `server` overrides the saved address (`host` or `host:port`) and connects.
     pub fn new(cc: &eframe::CreationContext<'_>, server: Option<String>) -> Self {
         theme::install(&cc.egui_ctx);
+        let banner = egui_extras::image::load_svg_bytes(
+            include_bytes!("../../assets/banner.svg"),
+            &Default::default(),
+        )
+        .expect("valid app banner SVG");
+        let logo = egui_extras::image::load_svg_bytes(
+            include_bytes!("../../assets/logo.svg"),
+            &Default::default(),
+        )
+        .expect("valid app logo SVG");
+        let banner = cc
+            .egui_ctx
+            .load_texture("banner", banner, egui::TextureOptions::LINEAR);
+        let logo = cc
+            .egui_ctx
+            .load_texture("logo", logo, egui::TextureOptions::LINEAR);
         let mut settings: Settings = cc
             .storage
             .and_then(|s| eframe::get_value(s, eframe::APP_KEY))
@@ -111,6 +129,8 @@ impl App {
         let worker = worker::spawn(move || ctx.request_repaint());
         let mut app = Self {
             worker,
+            banner,
+            logo,
             conn: Conn::Disconnected(None),
             devices: Vec::new(),
             profiles: Vec::new(),
@@ -292,7 +312,7 @@ impl App {
                     .stroke(Stroke::new(1.0, BORDER)),
             )
             .show(ui, |ui| {
-                logo(ui);
+                logo(self, ui);
                 ui.add_space(20.0);
 
                 if nav_item(ui, ICON_GRID_VIEW, "Overview", self.page == Page::Overview).clicked() {
@@ -482,42 +502,14 @@ impl eframe::App for App {
 // Sidebar pieces
 // ---------------------------------------------------------------------------
 
-/// Paints a rainbow ring next to the product name.
-pub fn logo_ring(ui: &mut Ui, size: f32, t: f32) {
-    let (rect, _) = ui.allocate_exact_size(vec2(size, size), Sense::hover());
-    let c = rect.center();
-    let (r_out, r_in) = (size / 2.0, size / 2.0 - size * 0.17);
-    const N: usize = 48;
-    let mut mesh = Mesh::default();
-    for i in 0..=N {
-        let a = i as f32 / N as f32 * std::f32::consts::TAU - std::f32::consts::FRAC_PI_2;
-        let col = theme::to_c32(Rgb::from_hsv(
-            i as f32 / N as f32 * 360.0 + t * 60.0,
-            0.85,
-            1.0,
-        ));
-        let d = vec2(a.cos(), a.sin());
-        mesh.colored_vertex(c + d * r_out, col);
-        mesh.colored_vertex(c + d * r_in, col);
-    }
-    for i in 0..N as u32 {
-        let b = i * 2;
-        mesh.add_triangle(b, b + 1, b + 2);
-        mesh.add_triangle(b + 1, b + 3, b + 2);
-    }
-    ui.painter().add(mesh);
-    ui.painter()
-        .circle_filled(c, r_in * 0.42, Color32::from_white_alpha(230));
-}
-
-fn logo(ui: &mut Ui) {
+fn logo(app: &App, ui: &mut Ui) {
     ui.horizontal(|ui| {
         ui.add_space(4.0);
-        logo_ring(ui, 34.0, 0.0);
+        ui.add(egui::Image::new(&app.logo).fit_to_exact_size(vec2(34.0, 28.0)));
         ui.add_space(4.0);
         ui.vertical(|ui| {
             ui.spacing_mut().item_spacing.y = 0.0;
-            ui.label(RichText::new("OpenRGB").size(18.0).strong().color(TEXT));
+            ui.label(RichText::new("PimpBox RGB").size(18.0).strong().color(TEXT));
             ui.label(RichText::new("Lighting control").small().color(TEXT_DIM));
         });
     });

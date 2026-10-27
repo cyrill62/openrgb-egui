@@ -83,6 +83,8 @@ pub fn spawn_with_name(name: &'static str, repaint: impl Fn() + Send + 'static) 
                 repaint: Box::new(repaint),
                 client_name: name,
                 client: None,
+                profile_client: None,
+                profile_client_error: None,
                 devices: Vec::new(),
             }
             .run()
@@ -97,6 +99,8 @@ struct Worker {
     repaint: Box<dyn Fn() + Send>,
     client_name: &'static str,
     client: Option<Client>,
+    profile_client: Option<Client>,
+    profile_client_error: Option<String>,
     devices: Vec<Controller>,
 }
 
@@ -130,6 +134,7 @@ impl Worker {
     fn fail(&mut self, e: crate::protocol::Error) {
         if matches!(e, crate::protocol::Error::Io(_)) {
             self.client = None;
+            self.profile_client = None;
             self.devices.clear();
             self.emit(Event::Disconnected(Some(e.to_string())));
         } else {
@@ -141,6 +146,18 @@ impl Worker {
         self.client
             .as_mut()
             .ok_or_else(|| crate::protocol::Error::Unexpected("not connected".into()))
+    }
+
+    fn profile_client(&mut self) -> crate::protocol::Result<&mut Client> {
+        if self.profile_client.is_some() {
+            Ok(self.profile_client.as_mut().unwrap())
+        } else if let Some(e) = &self.profile_client_error {
+            Err(crate::protocol::Error::Unexpected(format!(
+                "Could not open the profile connection: {e}"
+            )))
+        } else {
+            self.client()
+        }
     }
 
     fn refresh(&mut self) -> crate::protocol::Result<()> {
@@ -166,6 +183,8 @@ impl Worker {
         match cmd {
             Command::Connect { host, port } => {
                 self.client = None;
+                self.profile_client = None;
+                self.profile_client_error = None;
                 let c = match Client::connect(&host, port, self.client_name) {
                     Ok(c) => c,
                     Err(e) => {
@@ -176,6 +195,12 @@ impl Worker {
                     }
                 };
                 let (proto, server_proto) = (c.proto, c.server_proto);
+                if server_proto >= 6 {
+                    match Client::connect_for_profiles(&host, port, self.client_name) {
+                        Ok(c) => self.profile_client = Some(c),
+                        Err(e) => self.profile_client_error = Some(e.to_string()),
+                    }
+                }
                 self.client = Some(c);
                 self.emit(Event::Connected {
                     proto,
@@ -185,6 +210,8 @@ impl Worker {
             }
             Command::Disconnect => {
                 self.client = None;
+                self.profile_client = None;
+                self.profile_client_error = None;
                 self.devices.clear();
                 self.emit(Event::Disconnected(None));
             }
@@ -229,17 +256,26 @@ impl Worker {
                 self.refresh()?;
             }
             Command::SaveProfile(name) => {
-                self.client()?
-                    .profile_op(pkt::REQUEST_SAVE_PROFILE, &name)?;
-                thread::sleep(Duration::from_millis(100));
-                let p = self.client()?.profiles()?;
+                let p = {
+                    let c = self.profile_client()?;
+                    c.profile_op(pkt::REQUEST_SAVE_PROFILE, &name)?;
+                    thread::sleep(Duration::from_millis(100));
+                    c.profiles()?
+                };
+                if !p.contains(&name) {
+                    return Err(crate::protocol::Error::Unexpected(format!(
+                        "OpenRGB did not save profile “{name}”"
+                    )));
+                }
                 self.emit(Event::Profiles(p));
             }
             Command::DeleteProfile(name) => {
-                self.client()?
-                    .profile_op(pkt::REQUEST_DELETE_PROFILE, &name)?;
-                thread::sleep(Duration::from_millis(100));
-                let p = self.client()?.profiles()?;
+                let p = {
+                    let c = self.profile_client()?;
+                    c.profile_op(pkt::REQUEST_DELETE_PROFILE, &name)?;
+                    thread::sleep(Duration::from_millis(100));
+                    c.profiles()?
+                };
                 self.emit(Event::Profiles(p));
             }
         }

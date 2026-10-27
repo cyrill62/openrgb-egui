@@ -5,6 +5,12 @@ version 0.1.0; entries will be added as changes are released.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-27
+
+Use the logo, not the banner
+Fix OpenRGB profile creation & loading
+Fix app'name
+
 ## [0.2.0] - 2026-10-26
 
 Fix links after renaming the project

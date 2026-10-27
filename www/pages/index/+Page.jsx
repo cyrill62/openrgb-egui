@@ -1,5 +1,5 @@
 import './style.css'
-import logo from '../../assets/logo.svg'
+import banner from '../../assets/banner.svg'
 import { MotionConfig, motion } from 'motion/react'
 
 const github = 'https://github.com/cyrill62/pimpbox-rgb'
@@ -30,7 +30,7 @@ export default function Page() {
         <div className="hero-content grid max-w-6xl gap-16 lg:grid-cols-[1.15fr_.85fr]">
           <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease: 'easeOut' }}>
             <div className="badge badge-outline mb-6 border-primary/50 px-4 py-3 text-primary">OpenRGB, with attitude</div>
-            <h1 className="max-w-[680px]"><img className="block w-full" src={logo} alt="PimpBox RGB — Pimp My Box: RGB Edition" /></h1>
+            <h1 className="max-w-[680px]"><img className="block w-full" src={banner} alt="PimpBox RGB — Pimp My Box: RGB Edition" /></h1>
             <p className="mt-7 max-w-xl text-lg leading-8 text-base-content/70">
               Take control of your lighting. Browse devices, pick a mode, paint individual LEDs, resize zones, and manage profiles.
             </p>
